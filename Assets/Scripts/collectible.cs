@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class collectible : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        Debug.Log("Collectible collected");
+        Object.Destroy(this.gameObject);
     }
 }

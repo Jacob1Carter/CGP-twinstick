@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speedMult = 1f;
+    public float speedMult = 5f;
 
     private float horizontalInput;
     private float verticalInput;
@@ -10,19 +10,16 @@ public class PlayerMovement : MonoBehaviour
     private Transform playerTransform;
     private Vector3 playerPosition;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        Debug.Log("here");
         playerTransform = this.gameObject.GetComponent<Transform>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-        Debug.Log(horizontalInput.ToString() + ", " + verticalInput.ToString());
 
         if (horizontalInput != 0)
         {
@@ -33,12 +30,12 @@ public class PlayerMovement : MonoBehaviour
             playerPosition.z += verticalInput;
         }
 
-        playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult);
+        playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult, Space.World);
         playerPosition = Vector3.zero;
-    }
 
-    void FixedUpdate()
-    {
-        
+        Vector3 mouseDirection = Input.mousePosition - Camera.main.WorldToScreenPoint(this.transform.position);
+
+        float angle = Mathf.Atan2(mouseDirection.x, mouseDirection.y) * Mathf.Rad2Deg;
+        this.transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 }
