@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speedMult = 5f;
+    public float speedMult;
 
     private float horizontalInput;
     private float verticalInput;
 
     private Transform playerTransform;
     private Vector3 playerPosition;
+    private Rigidbody rb;
 
     private void Start()
     {
         playerTransform = this.gameObject.GetComponent<Transform>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -37,5 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
         float angle = Mathf.Atan2(mouseDirection.x, mouseDirection.y) * Mathf.Rad2Deg;
         this.transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+        rb.linearVelocity = Vector3.zero;
     }
 }
