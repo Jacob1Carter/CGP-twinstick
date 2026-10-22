@@ -5,9 +5,11 @@ public class collectible : MonoBehaviour
     private Transform playerTransform;
     private Transform collectibleTransform;
     private float distanceToPlayer;
+    private Score scoreRef;
     private void Start()
     {
         playerTransform = GameObject.Find("Player").GetComponent<Transform>();
+        scoreRef = GameObject.Find("ScoreManager").GetComponent<Score>();
         collectibleTransform = this.gameObject.GetComponent<Transform>();
     }
 
@@ -17,7 +19,7 @@ public class collectible : MonoBehaviour
 
         if (distanceToPlayer < 0.5f)
         {
-            Debug.Log("Collectible collected");
+            scoreRef.score++;
             Object.Destroy(this.gameObject);
         }
     }

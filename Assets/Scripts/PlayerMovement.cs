@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speedMult;
-
+    [SerializeField] private float speedMult;
+    private float moveModeMult = 1f;
     private float horizontalInput;
     private float verticalInput;
 
@@ -32,7 +32,20 @@ public class PlayerMovement : MonoBehaviour
             playerPosition.z += verticalInput;
         }
 
-        playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult, Space.World);
+        if (Input.GetKey(KeyCode.LeftShift)) // sprint
+        {
+            moveModeMult = 2f;
+        }
+        else if (Input.GetKey(KeyCode.LeftControl)) // sneak
+        {
+            moveModeMult = 0.5f;
+        }
+        else // walk
+        {
+            moveModeMult = 1;
+        }
+
+        playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult * moveModeMult, Space.World);
         playerPosition = Vector3.zero;
 
         Vector3 mouseDirection = Input.mousePosition - Camera.main.WorldToScreenPoint(this.transform.position);
