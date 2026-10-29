@@ -25,7 +25,6 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(enemies.Count);
         for (int i = 0; i < enemies.Count; i++)
         {
             if (enemies[i] == null)
