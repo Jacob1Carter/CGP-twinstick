@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
     private Transform playerTransform;
     private Vector3 playerPosition;
     private Rigidbody rb;
+    public bool isSpeeding = false;
+    private int speedingMult = 2;
 
     private void Start()
     {
@@ -45,7 +47,15 @@ public class PlayerMovement : MonoBehaviour
             moveModeMult = 1;
         }
 
-        playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult * moveModeMult, Space.World);
+        if (isSpeeding)
+        {
+            playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult * moveModeMult * speedingMult, Space.World);
+        }
+        else
+        {
+            playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult * moveModeMult, Space.World);
+        }
+
         playerPosition = Vector3.zero;
 
         Vector3 mouseDirection = Input.mousePosition - Camera.main.WorldToScreenPoint(this.transform.position);

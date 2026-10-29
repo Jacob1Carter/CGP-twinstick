@@ -28,7 +28,7 @@ public class EnemyBlob : MonoBehaviour
 
         if (distanceToPlayer <= attackRange)
         {
-            playerHealth.health -= damage;
+            playerHealth.TakeDamage(damage);
             explosionFx.SetActive(true);
             explosionFx.transform.parent = null;
             Object.Destroy(this.gameObject);
