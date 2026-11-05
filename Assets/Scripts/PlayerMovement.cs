@@ -1,12 +1,16 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference lookAction;
+    [SerializeField] private InputActionReference sprintAction;
+    [SerializeField] private InputActionReference sneakAction;
+    Vector2 moveInput;
+    Vector2 lookInput;
     [SerializeField] private float speedMult;
     private float moveModeMult = 1f;
-    private float horizontalInput;
-    private float verticalInput;
-
     private Transform playerTransform;
     private Vector3 playerPosition;
     private Rigidbody rb;
@@ -22,23 +26,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
+        moveInput = moveAction.action.ReadValue<Vector2>();
+        lookInput = lookAction.action.ReadValue<Vector2>();
 
-        if (horizontalInput != 0)
-        {
-            playerPosition.x += horizontalInput;
-        }
-        if (verticalInput != 0)
-        {
-            playerPosition.z += verticalInput;
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift)) // sprint
+        if (sprintAction.action.IsPressed()) // sprint
         {
             moveModeMult = 2f;
         }
-        else if (Input.GetKey(KeyCode.LeftControl)) // sneak
+        else if (sneakAction.action.IsPressed()) // sneak
         {
             moveModeMult = 0.5f;
         }
@@ -47,22 +42,71 @@ public class PlayerMovement : MonoBehaviour
             moveModeMult = 1;
         }
 
+        Vector2 direction = -lookInput;
+
+        if (lookAction.action.activeControl?.device is Mouse)
+        {
+            Vector2 playerOnScreen = Camera.main.WorldToScreenPoint(transform.position);
+            direction = Mouse.current.position.ReadValue() - playerOnScreen;
+        }
+
+        if (direction.sqrMagnitude > 0.05f)
+        {
+            transform.forward = new Vector3(direction.x, 0f, direction.y);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        Vector2 direction = moveInput.normalized;
+        float speed = speedMult * moveModeMult;
         if (isSpeeding)
         {
-            playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult * moveModeMult * speedingMult, Space.World);
+            speed *= speedingMult;
         }
-        else
+        rb.linearVelocity = new Vector3(
+            direction.x * speed,
+            rb.linearVelocity.y,
+            direction.y * speed
+        );
+    }
+
+    private void DebugInput()
+    {
+        if (moveInput.sqrMagnitude > 0.01f)
         {
-            playerTransform.Translate(playerPosition.normalized * Time.deltaTime * speedMult * moveModeMult, Space.World);
+            Debug.Log("Move: " + moveInput);
         }
 
-        playerPosition = Vector3.zero;
+        if (lookInput.sqrMagnitude > 0.01f)
+        {
+            Debug.Log("Look: " + lookInput);
+        }
 
-        Vector3 mouseDirection = Input.mousePosition - Camera.main.WorldToScreenPoint(this.transform.position);
+        if (sprintAction.action.WasPressedThisFrame())
+        {
+            Debug.Log("Sprint pressed");
+        }
 
-        float angle = Mathf.Atan2(mouseDirection.x, mouseDirection.y) * Mathf.Rad2Deg;
-        this.transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        if (sneakAction.action.WasPressedThisFrame())
+        {
+            Debug.Log("Sneak pressed");
+        }
+    }
 
-        rb.linearVelocity = Vector3.zero;
+    private void OnEnable()
+    {
+        moveAction.action.Enable();
+        lookAction.action.Enable();
+        sprintAction.action.Enable();
+        sneakAction.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction.action.Disable();
+        lookAction.action.Disable();
+        sprintAction.action.Disable();
+        sneakAction.action.Disable();
     }
 }

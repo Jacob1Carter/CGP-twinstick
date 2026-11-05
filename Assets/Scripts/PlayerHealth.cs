@@ -20,7 +20,6 @@ public class PlayerHealth : MonoBehaviour
         {
             health += 2.5f * Time.deltaTime;
         }
-        Debug.Log(health);
 
         if (health <= 0)
         {
@@ -32,7 +31,6 @@ public class PlayerHealth : MonoBehaviour
     {
         if (!isInvincible)
         {
-            Debug.Log("Damage taken");
             health -= amount;
         }
     }
