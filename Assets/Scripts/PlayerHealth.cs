@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -20,6 +21,11 @@ public class PlayerHealth : MonoBehaviour
             health += 2.5f * Time.deltaTime;
         }
         Debug.Log(health);
+
+        if (health <= 0)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
     public void TakeDamage(float amount)
