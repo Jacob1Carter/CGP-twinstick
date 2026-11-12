@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class EnemyBlob : MonoBehaviour
 {
-    private float speedMult = 3f;
+    public float speedMult = 3f;
     [SerializeField] private Vector3 moveDirection;
     [SerializeField] private GameObject explosionFx;
 

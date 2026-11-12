@@ -39,7 +39,7 @@ public class EnemyKillerSnail : MonoBehaviour
         transform.rotation = agentYaw * rotationOffset;
     }
 
-    public void takeDamage(float damageAmount)
+    public void TakeDamage(float damageAmount)
     {
         health -= damageAmount;
         if (health <= 0f)

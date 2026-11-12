@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class Ability : MonoBehaviour
@@ -7,13 +8,40 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] private float damage;
     private bool hasHitEnemy;
     
-    private void onTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (hasHitEnemy == true)
+        {
+            return;
+        }
+
+        bool damageApplied = ApplyDamage(other.gameObject);
+        if (damageApplied == true)
+        {
+            hasHitEnemy = true;
+            ApplyEffect(other.gameObject);
+            Destroy(gameObject);
+        }
     }
 
     private bool ApplyDamage(GameObject target)
     {
+        EnemyBlob enemyBlob = target.GetComponentInParent<EnemyBlob>(); 
+
+        if (enemyBlob != null)
+        {
+            enemyBlob.TakeDamage(damage);
+            return true;
+        }
+
+        EnemyKillerSnail enemySnail = target.GetComponentInParent<EnemyKillerSnail>(); 
+
+        if (enemySnail != null)
+        {
+            enemySnail.TakeDamage(damage);
+            return true;
+        }
+
         return false;
     }
 
