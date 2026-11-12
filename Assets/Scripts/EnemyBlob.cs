@@ -14,6 +14,7 @@ public class EnemyBlob : MonoBehaviour
 
     private float damage = 15f;
     private float attackRange = 1.4f;
+    private float health = 20f;
 
     void Start()
     {
@@ -42,5 +43,14 @@ public class EnemyBlob : MonoBehaviour
         moveDirection = Vector3.Reflect(
             moveDirection,other.GetContact(0).normal
         );
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        health -= damageAmount;
+        if (health <= 0f)
+        {
+            Destroy(gameObject);
+        }
     }
 }

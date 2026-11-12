@@ -9,6 +9,8 @@ public class EnemyKillerSnail : MonoBehaviour
     private Quaternion rotationOffset;
     private float attackDistance = 3f;
 
+    private float health = 45f;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -35,5 +37,14 @@ public class EnemyKillerSnail : MonoBehaviour
     {
         Quaternion agentYaw = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
         transform.rotation = agentYaw * rotationOffset;
+    }
+
+    public void takeDamage(float damageAmount)
+    {
+        health -= damageAmount;
+        if (health <= 0f)
+        {
+            Destroy(gameObject);
+        }
     }
 }
